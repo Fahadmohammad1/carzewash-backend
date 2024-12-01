@@ -17,7 +17,15 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
 
 // retrieve bookings from db
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
-  const result = await BookingService.getAllBookings();
+  const phone = req.query.phone as string;
+  const email = req.query.email as string;
+  const password = req.query.password as string;
+
+  const result = await BookingService.getAllBookings({
+    phone,
+    email,
+    password,
+  });
 
   sendResponse(res, {
     success: true,

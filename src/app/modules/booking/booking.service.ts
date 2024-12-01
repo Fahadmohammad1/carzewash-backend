@@ -1,5 +1,6 @@
+import mongoose from "mongoose";
 import ApiError from "../../errors/ApiError";
-import { TBooking } from "./booking.interface";
+import { TAdminCredential, TBooking } from "./booking.interface";
 import Booking from "./booking.model";
 
 const createBooking = async (bookingInfo: TBooking) => {
@@ -28,7 +29,7 @@ const createBooking = async (bookingInfo: TBooking) => {
   return createdBooking;
 };
 
-const getAllBookings = async () => {
+const getAllBookings = async (adminInfo: TAdminCredential) => {
   const today = new Date().toISOString().split("T")[0];
 
   // deleting the expired booking
@@ -40,6 +41,18 @@ const getAllBookings = async () => {
       $set: { expired: true },
     }
   );
+
+  // validating the admin
+  const admimDB = mongoose.connection.collection("super_admin");
+  const admin = await admimDB.find({}).toArray();
+
+  if (
+    admin[0].email !== adminInfo.email &&
+    admin[0].phone !== adminInfo.phone &&
+    admin[0].password !== adminInfo.password
+  ) {
+    throw new ApiError(401, "Unauthorized Access");
+  }
 
   // retrieving all the bookings except the expireds
   const bookings = await Booking.find({ expired: false });

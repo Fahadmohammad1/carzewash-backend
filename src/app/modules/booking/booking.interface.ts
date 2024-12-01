@@ -8,3 +8,9 @@ export type TBooking = {
   formula: string;
   expired: boolean;
 };
+
+export type TAdminCredential = {
+  phone: string;
+  email: string;
+  password: string;
+};
