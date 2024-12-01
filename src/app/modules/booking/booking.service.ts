@@ -5,7 +5,6 @@ import Booking from "./booking.model";
 const createBooking = async (bookingInfo: TBooking) => {
   const { date, slot } = bookingInfo;
 
-  // checking if the slot is already booked
   const isBookingExist = await Booking.findOne({ date, slot });
 
   if (isBookingExist) {
@@ -18,7 +17,18 @@ const createBooking = async (bookingInfo: TBooking) => {
 };
 
 const getAllBookings = async () => {
-  const bookings = await Booking.find();
+  const today = new Date().toISOString().split("T")[0];
+
+  await Booking.updateMany(
+    {
+      date: { $lt: today },
+    },
+    {
+      $set: { expired: true },
+    }
+  );
+
+  const bookings = await Booking.find({ expired: false });
 
   return bookings;
 };

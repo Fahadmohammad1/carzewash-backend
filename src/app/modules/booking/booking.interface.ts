@@ -6,4 +6,5 @@ export type TBooking = {
   time: string;
   slot: string;
   formula: string;
+  expired: boolean;
 };
