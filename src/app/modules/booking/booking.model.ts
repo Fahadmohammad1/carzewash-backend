@@ -23,6 +23,11 @@ const bookingSchema = new Schema<TBooking>(
       type: String,
       required: true,
     },
+    slot: {
+      type: String,
+      required: true,
+      enum: ["morning", "noon"],
+    },
     formula: {
       type: String,
       required: true,
@@ -35,6 +40,8 @@ const bookingSchema = new Schema<TBooking>(
     },
   }
 );
+
+bookingSchema.index({ date: 1, slot: 1 }, { unique: true });
 
 const Booking = mongoose.model("Booking", bookingSchema);
 

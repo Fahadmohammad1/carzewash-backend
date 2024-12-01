@@ -4,5 +4,6 @@ export type TBooking = {
   carModel: string;
   date: string;
   time: string;
+  slot: string;
   formula: string;
 };
