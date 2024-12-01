@@ -18,6 +18,12 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 //Not Found
-// app.use(notFound);
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "No Data Found",
+    error: "",
+  });
+});
 
 export default app;
