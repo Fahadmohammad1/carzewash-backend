@@ -1,6 +1,21 @@
 import ApiError from "../../errors/ApiError";
 import Admin, { TAdmin } from "./admin.model";
 
+const login = async (adminInfo: TAdmin) => {
+  const findAdmin = await Admin.findOne({
+    phone: adminInfo.phone,
+    email: adminInfo.email,
+  });
+
+  if (findAdmin?.password !== adminInfo.password) {
+    throw new ApiError(400, "Failed to login");
+  }
+
+  return {
+    verified: 200,
+  };
+};
+
 const updatePassword = async (adminInfo: TAdmin) => {
   const findAdmin = await Admin.find({});
 
@@ -21,5 +36,6 @@ const updatePassword = async (adminInfo: TAdmin) => {
 };
 
 export const AdminService = {
+  login,
   updatePassword,
 };

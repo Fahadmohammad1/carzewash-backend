@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import ApiError from "../../errors/ApiError";
 import { TBooking } from "./booking.interface";
 import Booking from "./booking.model";
+import Admin, { TAdmin } from "../admin/admin.model";
 
 const createBooking = async (bookingInfo: TBooking) => {
   const { date, slot } = bookingInfo;
@@ -29,7 +30,7 @@ const createBooking = async (bookingInfo: TBooking) => {
   return createdBooking;
 };
 
-const getAllBookings = async (adminInfo: TAdminCredential) => {
+const getAllBookings = async (adminInfo: TAdmin) => {
   const today = new Date().toISOString().split("T")[0];
 
   // deleting the expired booking
@@ -43,8 +44,7 @@ const getAllBookings = async (adminInfo: TAdminCredential) => {
   );
 
   // validating the admin
-  const admimDB = mongoose.connection.collection("super_admin");
-  const admin = await admimDB.find({}).toArray();
+  const admin = await Admin.find({});
 
   if (
     admin[0].email !== adminInfo.email &&
