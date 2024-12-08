@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import ApiError from "../../errors/ApiError";
-import { TAdminCredential, TBooking } from "./booking.interface";
+import { TBooking } from "./booking.interface";
 import Booking from "./booking.model";
 
 const createBooking = async (bookingInfo: TBooking) => {
