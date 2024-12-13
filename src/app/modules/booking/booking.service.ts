@@ -43,16 +43,13 @@ const getAllBookings = async (adminInfo: TAdmin) => {
   );
 
   // validating the admin
-  const admin = await Admin.findOne({ phone: adminInfo.phone });
+  const admin = await Admin.findOne({
+    phone: adminInfo.phone,
+    email: adminInfo.email,
+    password: adminInfo.password,
+  });
 
   if (!admin) {
-    throw new ApiError(404, "Admin not found");
-  }
-
-  if (
-    admin.email !== adminInfo.email &&
-    admin.password !== adminInfo.password
-  ) {
     throw new ApiError(401, "Unauthorized Access");
   }
 
@@ -63,20 +60,18 @@ const getAllBookings = async (adminInfo: TAdmin) => {
 };
 
 export const deleteBooking = async (adminInfo: TAdmin, id: string) => {
-  const admin = await Admin.findOne({ phone: adminInfo.phone });
+  const admin = await Admin.findOne({
+    phone: adminInfo.phone,
+    email: adminInfo.email,
+    password: adminInfo.password,
+  });
 
   if (!admin) {
-    throw new ApiError(404, "Admin not found");
-  }
-
-  if (
-    admin.email !== adminInfo.email &&
-    admin.password !== adminInfo.password
-  ) {
     throw new ApiError(401, "Unauthorized Access");
   }
 
-  const findBooking = await Booking.findOne({ id });
+  const findBooking = await Booking.findOne({ _id: id });
+  console.log(findBooking);
 
   if (!findBooking) {
     throw new ApiError(404, "Booking not found");
@@ -84,7 +79,7 @@ export const deleteBooking = async (adminInfo: TAdmin, id: string) => {
 
   const result = await Booking.updateOne(
     {
-      id,
+      _id: id,
     },
     {
       $set: { expired: true },

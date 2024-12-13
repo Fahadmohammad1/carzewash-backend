@@ -18,16 +18,13 @@ const createContact = async (contactInfo: TContact) => {
 };
 
 const gellAllContacts = async (adminInfo: TAdmin) => {
-  const admin = await Admin.findOne({ phone: adminInfo.phone });
+  const admin = await Admin.findOne({
+    phone: adminInfo.phone,
+    email: adminInfo.email,
+    password: adminInfo.password,
+  });
 
   if (!admin) {
-    throw new ApiError(404, "Admin not found");
-  }
-
-  if (
-    admin.email !== adminInfo.email &&
-    admin.password !== adminInfo.password
-  ) {
     throw new ApiError(401, "Unauthorized Access");
   }
 
@@ -37,26 +34,23 @@ const gellAllContacts = async (adminInfo: TAdmin) => {
 };
 
 const deleteContact = async (adminInfo: TAdmin, id: string) => {
-  const admin = await Admin.findOne({ phone: adminInfo.phone });
+  const admin = await Admin.findOne({
+    phone: adminInfo.phone,
+    email: adminInfo.email,
+    password: adminInfo.password,
+  });
 
   if (!admin) {
-    throw new ApiError(404, "Admin not found");
-  }
-
-  if (
-    admin.email !== adminInfo.email &&
-    admin.password !== adminInfo.password
-  ) {
     throw new ApiError(401, "Unauthorized Access");
   }
 
-  const findContact = await Contact.findOne({ id });
+  const findContact = await Contact.findOne({ _id: id });
 
   if (!findContact) {
     throw new ApiError(404, "Contact not found");
   }
 
-  const result = await Contact.deleteOne({ id });
+  const result = await Contact.deleteOne({ _id: id });
 
   return result;
 };

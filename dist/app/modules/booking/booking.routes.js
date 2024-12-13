@@ -9,4 +9,5 @@ const booking_controller_1 = require("./booking.controller");
 const router = express_1.default.Router();
 router.post("/create", booking_controller_1.BookingController.createBooking);
 router.get("/", booking_controller_1.BookingController.getAllBookings);
+router.delete("/:id", booking_controller_1.BookingController.deleteBooking);
 exports.BookingRoutes = router;

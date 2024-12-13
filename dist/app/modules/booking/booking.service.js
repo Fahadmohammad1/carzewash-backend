@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BookingService = void 0;
+exports.BookingService = exports.deleteBooking = void 0;
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const booking_model_1 = __importDefault(require("./booking.model"));
 const admin_model_1 = __importDefault(require("../admin/admin.model"));
@@ -41,17 +41,42 @@ const getAllBookings = (adminInfo) => __awaiter(void 0, void 0, void 0, function
         $set: { expired: true },
     });
     // validating the admin
-    const admin = yield admin_model_1.default.find({});
-    if (admin[0].email !== adminInfo.email &&
-        admin[0].phone !== adminInfo.phone &&
-        admin[0].password !== adminInfo.password) {
+    const admin = yield admin_model_1.default.findOne({
+        phone: adminInfo.phone,
+        email: adminInfo.email,
+        password: adminInfo.password,
+    });
+    if (!admin) {
         throw new ApiError_1.default(401, "Unauthorized Access");
     }
     // retrieving all the bookings except the expireds
     const bookings = yield booking_model_1.default.find({});
     return bookings;
 });
+const deleteBooking = (adminInfo, id) => __awaiter(void 0, void 0, void 0, function* () {
+    const admin = yield admin_model_1.default.findOne({
+        phone: adminInfo.phone,
+        email: adminInfo.email,
+        password: adminInfo.password,
+    });
+    if (!admin) {
+        throw new ApiError_1.default(401, "Unauthorized Access");
+    }
+    const findBooking = yield booking_model_1.default.findOne({ _id: id });
+    console.log(findBooking);
+    if (!findBooking) {
+        throw new ApiError_1.default(404, "Booking not found");
+    }
+    const result = yield booking_model_1.default.updateOne({
+        _id: id,
+    }, {
+        $set: { expired: true },
+    });
+    return result;
+});
+exports.deleteBooking = deleteBooking;
 exports.BookingService = {
     createBooking,
     getAllBookings,
+    deleteBooking: exports.deleteBooking,
 };

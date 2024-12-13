@@ -43,7 +43,21 @@ const getAllBookings = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result,
     });
 }));
+const deleteBooking = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const phone = req.query.phone;
+    const email = req.query.email;
+    const password = req.query.password;
+    const result = yield booking_service_1.BookingService.deleteBooking({ phone, email, password }, id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Booking delated successfully",
+        data: result,
+    });
+}));
 exports.BookingController = {
     createBooking,
     getAllBookings,
+    deleteBooking,
 };
