@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import ApiError from "../../errors/ApiError";
 import { TBooking } from "./booking.interface";
 import Booking from "./booking.model";
@@ -44,12 +43,15 @@ const getAllBookings = async (adminInfo: TAdmin) => {
   );
 
   // validating the admin
-  const admin = await Admin.find({});
+  const admin = await Admin.findOne({ phone: adminInfo.phone });
+
+  if (!admin) {
+    throw new ApiError(404, "Admin not found");
+  }
 
   if (
-    admin[0].email !== adminInfo.email &&
-    admin[0].phone !== adminInfo.phone &&
-    admin[0].password !== adminInfo.password
+    admin.email !== adminInfo.email &&
+    admin.password !== adminInfo.password
   ) {
     throw new ApiError(401, "Unauthorized Access");
   }
@@ -60,7 +62,40 @@ const getAllBookings = async (adminInfo: TAdmin) => {
   return bookings;
 };
 
+export const deleteBooking = async (adminInfo: TAdmin, id: string) => {
+  const admin = await Admin.findOne({ phone: adminInfo.phone });
+
+  if (!admin) {
+    throw new ApiError(404, "Admin not found");
+  }
+
+  if (
+    admin.email !== adminInfo.email &&
+    admin.password !== adminInfo.password
+  ) {
+    throw new ApiError(401, "Unauthorized Access");
+  }
+
+  const findBooking = await Booking.findOne({ id });
+
+  if (!findBooking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  const result = await Booking.updateOne(
+    {
+      id,
+    },
+    {
+      $set: { expired: true },
+    }
+  );
+
+  return result;
+};
+
 export const BookingService = {
   createBooking,
   getAllBookings,
+  deleteBooking,
 };

@@ -35,7 +35,26 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteBooking = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const phone = req.query.phone as string;
+  const email = req.query.email as string;
+  const password = req.query.password as string;
+  const result = await BookingService.deleteBooking(
+    { phone, email, password },
+    id
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Booking delated successfully",
+    data: result,
+  });
+});
+
 export const BookingController = {
   createBooking,
   getAllBookings,
+  deleteBooking,
 };
