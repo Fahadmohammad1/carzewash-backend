@@ -55,7 +55,7 @@ const getAllBookings = async (adminInfo: TAdmin) => {
   }
 
   // retrieving all the bookings except the expireds
-  const bookings = await Booking.find({ expired: false });
+  const bookings = await Booking.find({});
 
   return bookings;
 };
